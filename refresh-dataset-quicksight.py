@@ -3,29 +3,20 @@ import boto3
 import time
 import sys
 
+datasetid = #define dataset id
+AwsAccountId = #aws account id
+
+
 time = str(int(time.time()))
 client = boto3.client('quicksight')
-response = client.create_ingestion(DataSetId='6b2db34d-7dc8-40f9-9111-f07d2573508d',IngestionId=time,AwsAccountId='431591413306')
+response = client.create_ingestion(DataSetId=datasetid,IngestionId=time,AwsAccountId=AwsAccountId)
 while True:
-    response = client.describe_ingestion(DataSetId='6b2db34d-7dc8-40f9-9111-f07d2573508d',IngestionId=time,AwsAccountId='431591413306')
+    response = client.describe_ingestion(DataSetId=datasetid,IngestionId=time,AwsAccountId=AwsAccountId)
     if response['Ingestion']['IngestionStatus'] in ('INITIALIZED', 'QUEUED', 'RUNNING'):
-        sleep(20) #mudar o valor, de acordo com o tempo esperado que pode levar para atualizar o dataset
+        sleep(20) #change the value according to the expected time it may take to update the dataset
     elif response['Ingestion']['IngestionStatus'] == 'COMPLETED':
         print("refresh completed")
         break
     else:
         print("refresh failed! - status ".format(response['Ingestion']['IngestionStatus']))
         sys.exit(1)
-
-
-
-
-#import boto3
-#
-#client = boto3.client('quicksight')
-#
-#response = client.list_data_sets(
-#    AwsAccountId='431591413306'
-#)
-#
-#print(response)
